@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potassium Stock Tester</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #0f1117;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: min(900px, 92vw);
+        }
+
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #9ca3af;
+            margin-bottom: 30px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .controls button {
+            border: 0;
+            border-radius: 8px;
+            padding: 10px 16px;
+            cursor: pointer;
+            background: #5865f2;
+            color: white;
+            font-weight: 600;
+        }
+
+        .controls button:hover {
+            opacity: .9;
+        }
+
+        .card {
+            width: 280px;
+            min-height: 300px;
+            padding: 20px;
+            border-radius: 14px;
+            background: #191c24;
+            border: 1px solid #292d38;
+        }
+
+        .logo {
+            width: 90px;
+            height: 90px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: #252936;
+            display: block;
+            margin-bottom: 18px;
+        }
+
+        .lifetime {
+            display: inline-block;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: #252936;
+            color: #aaa;
+            margin-bottom: 12px;
+        }
+
+        .name {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 5px 0 15px;
+        }
+
+        .buy-button {
+            width: 100%;
+            border: 0;
+            border-radius: 8px;
+            padding: 13px;
+            background: #5865f2;
+            color: white;
+            cursor: pointer;
+            font-weight: 700;
+            transition: .15s;
+        }
+
+        .buy-button:disabled {
+            cursor: not-allowed;
+            opacity: .45;
+        }
+
+        .status {
+            display: block;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #f87171;
+        }
+
+        .status.in-stock {
+            color: #4ade80;
+        }
+
+        #log {
+            margin-top: 25px;
+            padding: 15px;
+            min-height: 100px;
+            border-radius: 10px;
+            background: #090b10;
+            border: 1px solid #252936;
+            font-family: monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Stock Clicker Test</h1>
+
+    <div class="subtitle">
+        Mock WEao-style Potassium card for testing DOM watchers.
+    </div>
+
+    <div class="controls">
+        <button id="stockButton">
+            Put Potassium In Stock
+        </button>
+
+        <button id="outButton">
+            Put Potassium Out of Stock
+        </button>
+
+        <button id="resetButton">
+            Reset
+        </button>
+    </div>
+
+    <div class="card">
+
+        <span class="lifetime">
+            Lifetime
+        </span>
+
+        <img
+            class="logo"
+            src="https://cdn.weao.gg/slug/potassium/logo.png"
+            alt=""
+        >
+
+        <div class="name">
+            Potassium
+        </div>
+
+        <span
+            id="stockStatus"
+            class="status"
+        >
+            Out of stock
+        </span>
+
+        <button
+            id="potassiumButton"
+            class="buy-button"
+            type="button"
+            disabled
+            aria-disabled="true"
+        >
+            Get Potassium
+        </button>
+
+    </div>
+
+    <div id="log">Waiting...</div>
+
+</div>
+
+<script>
+    const button = document.getElementById("potassiumButton");
+    const status = document.getElementById("stockStatus");
+    const log = document.getElementById("log");
+
+    function writeLog(message) {
+        const time = new Date().toLocaleTimeString();
+
+        log.textContent =
+            `[${time}] ${message}\n` +
+            log.textContent;
+    }
+
+    function setStock(inStock) {
+        if (inStock) {
+            status.textContent = "In Stock";
+            status.classList.add("in-stock");
+
+            button.disabled = false;
+            button.setAttribute("aria-disabled", "false");
+
+            writeLog("Potassium changed to IN STOCK.");
+        } else {
+            status.textContent = "Out of stock";
+            status.classList.remove("in-stock");
+
+            button.disabled = true;
+            button.setAttribute("aria-disabled", "true");
+
+            writeLog("Potassium changed to OUT OF STOCK.");
+        }
+    }
+
+    button.addEventListener("click", () => {
+        writeLog("CLICK DETECTED — Potassium button was clicked.");
+
+        button.textContent = "Clicked!";
+
+        setTimeout(() => {
+            button.textContent = "Get Potassium";
+        }, 1000);
+    });
+
+    document.getElementById("stockButton").addEventListener(
+        "click",
+        () => setStock(true)
+    );
+
+    document.getElementById("outButton").addEventListener(
+        "click",
+        () => setStock(false)
+    );
+
+    document.getElementById("resetButton").addEventListener(
+        "click",
+        () => {
+            setStock(false);
+            log.textContent = "Reset.";
+        }
+    );
+</script>
+
+</body>
+</html>
