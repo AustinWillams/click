@@ -17,8 +17,8 @@
             color: #fff;
             font-family: Arial, sans-serif;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
         }
 
         .container {
@@ -26,19 +26,19 @@
         }
 
         h1 {
-            margin-bottom: 8px;
+            margin: 0 0 8px;
         }
 
         .subtitle {
             color: #9ca3af;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .controls {
             display: flex;
             gap: 10px;
-            margin-bottom: 25px;
             flex-wrap: wrap;
+            margin-bottom: 25px;
         }
 
         .controls button {
@@ -46,88 +46,121 @@
             border-radius: 8px;
             padding: 10px 16px;
             cursor: pointer;
-            background: #5865f2;
             color: white;
-            font-weight: 600;
+            background: #5865f2;
+            font-weight: 700;
         }
 
         .controls button:hover {
             opacity: .9;
         }
 
-        .card {
-            width: 280px;
-            min-height: 300px;
+        /*
+         * Important:
+         * Potassium is INSIDE the button, matching
+         * the structure your watcher searches for.
+         */
+        .weao-button {
+            width: 300px;
+            min-height: 330px;
             padding: 20px;
+            border: 1px solid #292d38;
             border-radius: 14px;
             background: #191c24;
-            border: 1px solid #292d38;
+            color: white;
+            cursor: pointer;
+            text-align: left;
+            transition: transform .15s, opacity .15s;
         }
 
-        .logo {
-            width: 90px;
-            height: 90px;
-            border-radius: 12px;
-            object-fit: cover;
-            background: #252936;
-            display: block;
-            margin-bottom: 18px;
+        .weao-button:not(:disabled):hover {
+            transform: translateY(-2px);
+        }
+
+        .weao-button:disabled {
+            cursor: not-allowed;
+            opacity: .7;
         }
 
         .lifetime {
             display: inline-block;
-            font-size: 12px;
-            padding: 4px 8px;
+            padding: 5px 9px;
+            margin-bottom: 15px;
             border-radius: 6px;
             background: #252936;
             color: #aaa;
-            margin-bottom: 12px;
+            font-size: 12px;
         }
 
-        .name {
-            font-size: 22px;
-            font-weight: 700;
-            margin: 5px 0 15px;
+        .logo-container {
+            width: 90px;
+            height: 90px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #252936;
         }
 
-        .buy-button {
+        .logo-container img {
             width: 100%;
-            border: 0;
-            border-radius: 8px;
-            padding: 13px;
-            background: #5865f2;
-            color: white;
-            cursor: pointer;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-name {
+            margin: 10px 0;
+            font-size: 23px;
             font-weight: 700;
-            transition: .15s;
         }
 
-        .buy-button:disabled {
-            cursor: not-allowed;
-            opacity: .45;
-        }
-
-        .status {
+        .stock-status {
             display: block;
-            margin-bottom: 12px;
-            font-size: 14px;
+            margin-bottom: 18px;
             color: #f87171;
+            font-size: 14px;
+            font-weight: 600;
         }
 
-        .status.in-stock {
+        .stock-status.in-stock {
             color: #4ade80;
         }
 
+        .buy-text {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            background: #5865f2;
+            text-align: center;
+            font-weight: 700;
+        }
+
         #log {
+            width: 100%;
+            min-height: 130px;
             margin-top: 25px;
             padding: 15px;
-            min-height: 100px;
+            border: 1px solid #252936;
             border-radius: 10px;
             background: #090b10;
-            border: 1px solid #252936;
-            font-family: monospace;
+            color: #d1d5db;
+            font-family: Consolas, monospace;
             font-size: 13px;
             white-space: pre-wrap;
+        }
+
+        .instructions {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #161922;
+            color: #9ca3af;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        code {
+            color: #fff;
         }
     </style>
 </head>
@@ -136,10 +169,10 @@
 
 <div class="container">
 
-    <h1>Stock Clicker Test</h1>
+    <h1>Potassium Stock Tester</h1>
 
     <div class="subtitle">
-        Mock WEao-style Potassium card for testing DOM watchers.
+        Local mock storefront for testing a DOM stock watcher.
     </div>
 
     <div class="controls">
@@ -156,105 +189,214 @@
         </button>
     </div>
 
-    <div class="card">
+
+    <!--
+        This intentionally resembles the structure
+        from the original Potassium card:
+
+        <button>
+            ...
+            <p>Potassium</p>
+            ...
+            In Stock
+        </button>
+    -->
+
+    <button
+        type="button"
+        class="weao-button"
+        aria-disabled="true"
+        disabled
+    >
 
         <span class="lifetime">
             Lifetime
         </span>
 
-        <img
-            class="logo"
-            src="https://cdn.weao.gg/slug/potassium/logo.png"
-            alt=""
-        >
+        <span class="logo-container">
+            <img
+                alt=""
+                src="https://cdn.weao.gg/slug/potassium/logo.png"
+            >
+        </span>
 
-        <div class="name">
+        <p class="product-name">
             Potassium
-        </div>
+        </p>
 
         <span
             id="stockStatus"
-            class="status"
+            class="stock-status"
         >
             Out of stock
         </span>
 
-        <button
-            id="potassiumButton"
-            class="buy-button"
-            type="button"
-            disabled
-            aria-disabled="true"
-        >
+        <span class="buy-text">
             Get Potassium
-        </button>
+        </span>
 
+    </button>
+
+
+    <div id="log">Waiting for a test...</div>
+
+    <div class="instructions">
+        <strong>Test:</strong><br>
+        1. Paste your watcher into the browser console.<br>
+        2. Click <code>Put Potassium In Stock</code>.<br>
+        3. The watcher should automatically click the Potassium card.<br>
+        4. The log should show the detected click.
     </div>
-
-    <div id="log">Waiting...</div>
 
 </div>
 
+
 <script>
-    const button = document.getElementById("potassiumButton");
-    const status = document.getElementById("stockStatus");
-    const log = document.getElementById("log");
+    const potassiumButton =
+        document.querySelector(".weao-button");
+
+    const stockStatus =
+        document.querySelector("#stockStatus");
+
+    const log =
+        document.querySelector("#log");
+
 
     function writeLog(message) {
-        const time = new Date().toLocaleTimeString();
+        const time =
+            new Date().toLocaleTimeString();
 
         log.textContent =
             `[${time}] ${message}\n` +
             log.textContent;
     }
 
+
     function setStock(inStock) {
+
         if (inStock) {
-            status.textContent = "In Stock";
-            status.classList.add("in-stock");
 
-            button.disabled = false;
-            button.setAttribute("aria-disabled", "false");
+            stockStatus.textContent =
+                "In Stock";
 
-            writeLog("Potassium changed to IN STOCK.");
+            stockStatus.classList.add(
+                "in-stock"
+            );
+
+            potassiumButton.disabled =
+                false;
+
+            potassiumButton.removeAttribute(
+                "disabled"
+            );
+
+            potassiumButton.setAttribute(
+                "aria-disabled",
+                "false"
+            );
+
+            writeLog(
+                "Potassium changed to IN STOCK."
+            );
+
         } else {
-            status.textContent = "Out of stock";
-            status.classList.remove("in-stock");
 
-            button.disabled = true;
-            button.setAttribute("aria-disabled", "true");
+            stockStatus.textContent =
+                "Out of stock";
 
-            writeLog("Potassium changed to OUT OF STOCK.");
+            stockStatus.classList.remove(
+                "in-stock"
+            );
+
+            potassiumButton.disabled =
+                true;
+
+            potassiumButton.setAttribute(
+                "disabled",
+                ""
+            );
+
+            potassiumButton.setAttribute(
+                "aria-disabled",
+                "true"
+            );
+
+            writeLog(
+                "Potassium changed to OUT OF STOCK."
+            );
         }
     }
 
-    button.addEventListener("click", () => {
-        writeLog("CLICK DETECTED — Potassium button was clicked.");
 
-        button.textContent = "Clicked!";
-
-        setTimeout(() => {
-            button.textContent = "Get Potassium";
-        }, 1000);
-    });
-
-    document.getElementById("stockButton").addEventListener(
+    potassiumButton.addEventListener(
         "click",
-        () => setStock(true)
-    );
+        function () {
 
-    document.getElementById("outButton").addEventListener(
-        "click",
-        () => setStock(false)
-    );
+            writeLog(
+                "CLICK DETECTED — Potassium button was clicked!"
+            );
 
-    document.getElementById("resetButton").addEventListener(
-        "click",
-        () => {
-            setStock(false);
-            log.textContent = "Reset.";
+            const originalText =
+                "Get Potassium";
+
+            const buyText =
+                potassiumButton.querySelector(
+                    ".buy-text"
+                );
+
+            if (buyText) {
+
+                buyText.textContent =
+                    "CLICKED!";
+
+                setTimeout(() => {
+                    buyText.textContent =
+                        originalText;
+                }, 1000);
+            }
         }
     );
+
+
+    document
+        .querySelector("#stockButton")
+        .addEventListener(
+            "click",
+            function () {
+                setStock(true);
+            }
+        );
+
+
+    document
+        .querySelector("#outButton")
+        .addEventListener(
+            "click",
+            function () {
+                setStock(false);
+            }
+        );
+
+
+    document
+        .querySelector("#resetButton")
+        .addEventListener(
+            "click",
+            function () {
+
+                setStock(false);
+
+                log.textContent =
+                    "Reset.";
+            }
+        );
+
+
+    /*
+     * Start in the same state as the original
+     * example: Out of stock + disabled.
+     */
+    setStock(false);
 </script>
 
 </body>
