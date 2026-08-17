@@ -1,403 +1,490 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Potassium Stock Tester</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WEAO-style Stock Tester</title>
+<style>
+:root {
+  --topbar-height: 54px;
+  --welcome-bg: rgba(255,255,255,.025);
+  --welcome-border: rgba(255,255,255,.07);
+  --welcome-title: rgba(255,255,255,.92);
+  --welcome-subtitle: rgba(255,255,255,.62);
+  --welcome-muted: rgba(255,255,255,.38);
+  --topbar-bg: rgba(20,20,20,.88);
+  --topbar-border: rgba(255,255,255,.06);
+  --weao-red: #ff4f5f;
+  --weao-green: #3bea57;
+  --btn-discord-bg: rgba(255,255,255,.06);
+  --btn-discord-text: rgba(255,255,255,.75);
+  --page-bg: #141414;
+}
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+* { box-sizing: border-box; }
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-            background: #0f1117;
-            color: #fff;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--page-bg);
+  color: var(--welcome-title);
+  font-family: Arial, Helvetica, sans-serif;
+}
 
-        .container {
-            width: min(900px, 92vw);
-        }
+body {
+  min-height: 100vh;
+}
 
-        h1 {
-            margin: 0 0 8px;
-        }
+button {
+  font: inherit;
+}
 
-        .subtitle {
-            color: #9ca3af;
-            margin-bottom: 25px;
-        }
+.weao-_7800c8 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--topbar-height);
+  z-index: 100;
+  overflow: hidden;
+}
 
-        .controls {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 25px;
-        }
+.weao-_617a09 {
+  position: relative;
+  height: 100%;
+  background: var(--topbar-bg);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--topbar-border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 8px;
+  z-index: 1;
+}
 
-        .controls button {
-            border: 0;
-            border-radius: 8px;
-            padding: 10px 16px;
-            cursor: pointer;
-            color: white;
-            background: #5865f2;
-            font-weight: 700;
-        }
+.logo-text {
+  display: inline-flex;
+  align-items: baseline;
+  font-size: 25px;
+  font-weight: 400;
+  letter-spacing: -.02em;
+  color: #fff;
+  white-space: nowrap;
+}
 
-        .controls button:hover {
-            opacity: .9;
-        }
+.logo-text .red { color: var(--weao-red); }
+.logo-text .green { color: var(--weao-green); }
 
-        /*
-         * Important:
-         * Potassium is INSIDE the button, matching
-         * the structure your watcher searches for.
-         */
-        .weao-button {
-            width: 300px;
-            min-height: 330px;
-            padding: 20px;
-            border: 1px solid #292d38;
-            border-radius: 14px;
-            background: #191c24;
-            color: white;
-            cursor: pointer;
-            text-align: left;
-            transition: transform .15s, opacity .15s;
-        }
+.profile {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--btn-discord-bg);
+  border-radius: 999px;
+  padding: 4px 12px 4px 4px;
+  color: var(--btn-discord-text);
+  font-size: 12px;
+}
 
-        .weao-button:not(:disabled):hover {
-            transform: translateY(-2px);
-        }
+.profile img {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+}
 
-        .weao-button:disabled {
-            cursor: not-allowed;
-            opacity: .7;
-        }
+.weao-_8cceb9 {
+  min-height: calc(100vh - var(--topbar-height));
+  padding: calc(var(--topbar-height) + 28px) 16px 48px;
+  display: flex;
+  justify-content: center;
+}
 
-        .lifetime {
-            display: inline-block;
-            padding: 5px 9px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            background: #252936;
-            color: #aaa;
-            font-size: 12px;
-        }
+.weao-_973856 {
+  background: var(--welcome-bg);
+  border: 1px solid var(--welcome-border);
+  backdrop-filter: blur(16px);
+  border-radius: 8px;
+  padding: 28px 32px;
+  width: 100%;
+  max-width: 640px;
+}
 
-        .logo-container {
-            width: 90px;
-            height: 90px;
-            margin-bottom: 15px;
-            border-radius: 12px;
-            overflow: hidden;
-            background: #252936;
-        }
+.header-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 
-        .logo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+.weao-_1c0605 {
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--welcome-title);
+  margin: 0;
+  line-height: 1.2;
+}
 
-        .product-name {
-            margin: 10px 0;
-            font-size: 23px;
-            font-weight: 700;
-        }
+.subtitle {
+  font-size: 12px;
+  color: var(--welcome-muted);
+  margin: 0;
+}
 
-        .stock-status {
-            display: block;
-            margin-bottom: 18px;
-            color: #f87171;
-            font-size: 14px;
-            font-weight: 600;
-        }
+.alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,.04);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--welcome-subtitle);
+  line-height: 1.4;
+  margin-top: 14px;
+}
 
-        .stock-status.in-stock {
-            color: #4ade80;
-        }
+.weao-_17d090 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
 
-        .buy-text {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            background: #5865f2;
-            text-align: center;
-            font-weight: 700;
-        }
+.weao-_730a2e {
+  position: relative;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(255,255,255,.024);
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  color: var(--welcome-title);
+  transition: background .15s;
+}
 
-        #log {
-            width: 100%;
-            min-height: 130px;
-            margin-top: 25px;
-            padding: 15px;
-            border: 1px solid #252936;
-            border-radius: 10px;
-            background: #090b10;
-            color: #d1d5db;
-            font-family: Consolas, monospace;
-            font-size: 13px;
-            white-space: pre-wrap;
-        }
+.weao-_730a2e,
+.weao-_c5d1e7 {
+  display: flex;
+  overflow: hidden;
+}
 
-        .instructions {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            background: #161922;
-            color: #9ca3af;
-            font-size: 14px;
-            line-height: 1.6;
-        }
+.weao-_730a2e:hover:not(:disabled) {
+  background: rgba(255,255,255,.043);
+}
 
-        code {
-            color: #fff;
-        }
-    </style>
+.weao-_730a2e:disabled,
+.weao-_f1d5f3 {
+  cursor: not-allowed;
+  background: rgba(255,255,255,.016);
+}
+
+.weao-_c5d1e7 {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255,255,255,.05);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.weao-_c5d1e7 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.weao-_30b24a {
+  gap: 5px;
+  padding: 3px 8px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 500;
+  border-radius: 999px;
+  background: rgba(255,255,255,.05);
+  color: var(--welcome-subtitle);
+  line-height: 1.4;
+  letter-spacing: .01em;
+  pointer-events: none;
+}
+
+.weao-_acd684 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.weao-_4b4f89 {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.05);
+  line-height: 1.5;
+  color: var(--welcome-subtitle);
+}
+
+.weao-_50dbb6 {
+  color: var(--welcome-muted);
+}
+
+.weao-_50dbb6.in-stock {
+  color: rgba(180,255,200,.95);
+  background: rgba(59,234,87,.1);
+}
+
+.recent {
+  margin-top: 24px;
+  border-top: 1px solid rgba(255,255,255,.05);
+  padding-top: 18px;
+}
+
+.recent-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.recent h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.claim-count {
+  font-size: 11px;
+  color: var(--welcome-muted);
+}
+
+.no-claims {
+  font-size: 12px;
+  color: var(--welcome-muted);
+  margin: 10px 0 0;
+}
+
+.test-panel {
+  margin-top: 20px;
+  padding: 12px;
+  border: 1px dashed rgba(255,255,255,.09);
+  border-radius: 10px;
+}
+
+.test-panel-title {
+  font-size: 11px;
+  color: var(--welcome-muted);
+  margin-bottom: 9px;
+}
+
+.test-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.test-buttons button {
+  border: 0;
+  border-radius: 999px;
+  padding: 7px 11px;
+  background: rgba(255,255,255,.07);
+  color: var(--welcome-subtitle);
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.test-buttons button:hover {
+  background: rgba(255,255,255,.11);
+}
+
+#log {
+  margin-top: 10px;
+  min-height: 50px;
+  padding: 9px;
+  border-radius: 8px;
+  background: rgba(0,0,0,.25);
+  color: var(--welcome-muted);
+  font: 10px/1.5 Consolas, monospace;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 480px) {
+  .weao-_973856 {
+    padding: 22px 16px;
+  }
+
+  .weao-_17d090 {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 8px;
+  }
+}
+</style>
 </head>
 
 <body>
+<header class="weao-_7800c8">
+  <div class="weao-_617a09">
+    <div class="logo-text">
+      <span>What</span><span class="red">Exps</span><span>Are.</span><span class="green">Online</span>
+    </div>
+    <div class="profile">
+      <span>Test User</span>
+    </div>
+  </div>
+</header>
 
-<div class="container">
+<main class="weao-_8cceb9">
+  <section class="weao-_973856">
 
-    <h1>Potassium Stock Tester</h1>
-
-    <div class="subtitle">
-        Local mock storefront for testing a DOM stock watcher.
+    <div class="header-row">
+      <h1 class="weao-_1c0605">
+        Booster Drop 8/15
+      </h1>
+      <p class="subtitle">
+        Mock WEAO storefront — local stock-event tester
+      </p>
     </div>
 
-    <div class="controls">
-        <button id="stockButton">
-            Put Potassium In Stock
-        </button>
-
-        <button id="outButton">
-            Put Potassium Out of Stock
-        </button>
-
-        <button id="resetButton">
-            Reset
-        </button>
+    <div class="alert">
+      <span>🔒</span>
+      <span><strong>Booster or Donator</strong> required to claim.</span>
     </div>
 
+    <div class="weao-_17d090">
 
-    <!--
-        This intentionally resembles the structure
-        from the original Potassium card:
+      <button type="button" class="weao-_730a2e weao-_f1d5f3" disabled aria-disabled="true">
+        <span class="weao-_30b24a">7 days</span>
+        <span class="weao-_c5d1e7"><img alt="" src="${volt_img}"></span>
+        <p class="weao-_acd684">Volt</p>
+        <span class="weao-_4b4f89 weao-_50dbb6">Out of stock</span>
+      </button>
 
-        <button>
-            ...
-            <p>Potassium</p>
-            ...
-            In Stock
-        </button>
-    -->
+      <button type="button" class="weao-_730a2e weao-_f1d5f3" disabled aria-disabled="true">
+        <span class="weao-_30b24a">1 month</span>
+        <span class="weao-_c5d1e7"><img alt="" src="${volt_img}"></span>
+        <p class="weao-_acd684">Volt</p>
+        <span class="weao-_4b4f89 weao-_50dbb6">Out of stock</span>
+      </button>
 
-    <button
-        type="button"
-        class="weao-button"
-        aria-disabled="true"
-        disabled
-    >
+      <button type="button" class="weao-_730a2e weao-_f1d5f3" disabled aria-disabled="true">
+        <span class="weao-_30b24a">3 months</span>
+        <span class="weao-_c5d1e7"><img alt="" src="${volt_img}"></span>
+        <p class="weao-_acd684">Volt</p>
+        <span class="weao-_4b4f89 weao-_50dbb6">Out of stock</span>
+      </button>
 
-        <span class="lifetime">
-            Lifetime
-        </span>
+      <button id="potassiumButton" type="button" class="weao-_730a2e weao-_f1d5f3" disabled aria-disabled="true">
+        <span class="weao-_30b24a">Lifetime</span>
+        <span class="weao-_c5d1e7"><img alt="" src="${potassium_img}"></span>
+        <p class="weao-_acd684">Potassium</p>
+        <span id="potassiumStatus" class="weao-_4b4f89 weao-_50dbb6">Out of stock</span>
+      </button>
 
-        <span class="logo-container">
-            <img
-                alt=""
-                src="https://cdn.weao.gg/slug/potassium/logo.png"
-            >
-        </span>
+      <button type="button" class="weao-_730a2e weao-_f1d5f3" disabled aria-disabled="true">
+        <span class="weao-_30b24a">Lifetime</span>
+        <span class="weao-_c5d1e7"><img alt="" src="${matcha_img}"></span>
+        <p class="weao-_acd684">Matcha Beta</p>
+        <span class="weao-_4b4f89 weao-_50dbb6">Out of stock</span>
+      </button>
 
-        <p class="product-name">
-            Potassium
-        </p>
-
-        <span
-            id="stockStatus"
-            class="stock-status"
-        >
-            Out of stock
-        </span>
-
-        <span class="buy-text">
-            Get Potassium
-        </span>
-
-    </button>
-
-
-    <div id="log">Waiting for a test...</div>
-
-    <div class="instructions">
-        <strong>Test:</strong><br>
-        1. Paste your watcher into the browser console.<br>
-        2. Click <code>Put Potassium In Stock</code>.<br>
-        3. The watcher should automatically click the Potassium card.<br>
-        4. The log should show the detected click.
     </div>
 
-</div>
+    <div class="recent">
+      <div class="recent-head">
+        <h2>Recent claims</h2>
+        <span class="claim-count"><span id="claimCount">0</span> keys claimed</span>
+      </div>
+      <p id="claimText" class="no-claims">No claims yet, be the first to grab a key!</p>
+    </div>
 
+    <div class="test-panel">
+      <div class="test-panel-title">TEST CONTROLS</div>
+      <div class="test-buttons">
+        <button id="stockBtn">Put Potassium In Stock</button>
+        <button id="outBtn">Put Potassium Out of Stock</button>
+        <button id="autoBtn">Auto stock event</button>
+      </div>
+      <div id="log">Waiting...</div>
+    </div>
+
+  </section>
+</main>
 
 <script>
-    const potassiumButton =
-        document.querySelector(".weao-button");
+const potassiumButton = document.getElementById("potassiumButton");
+const potassiumStatus = document.getElementById("potassiumStatus");
+const log = document.getElementById("log");
+const claimCount = document.getElementById("claimCount");
+const claimText = document.getElementById("claimText");
 
-    const stockStatus =
-        document.querySelector("#stockStatus");
+let claims = 0;
 
-    const log =
-        document.querySelector("#log");
+function logMessage(message) {
+  const time = new Date().toLocaleTimeString();
+  log.textContent = `[${time}] ${message}\n` + log.textContent;
+}
 
+function setPotassiumStock(inStock) {
+  if (inStock) {
+    potassiumStatus.textContent = "In Stock";
+    potassiumStatus.classList.add("in-stock");
 
-    function writeLog(message) {
-        const time =
-            new Date().toLocaleTimeString();
+    potassiumButton.disabled = false;
+    potassiumButton.removeAttribute("disabled");
+    potassiumButton.setAttribute("aria-disabled", "false");
 
-        log.textContent =
-            `[${time}] ${message}\n` +
-            log.textContent;
-    }
+    logMessage("Potassium changed to IN STOCK.");
+  } else {
+    potassiumStatus.textContent = "Out of stock";
+    potassiumStatus.classList.remove("in-stock");
 
+    potassiumButton.disabled = true;
+    potassiumButton.setAttribute("disabled", "");
+    potassiumButton.setAttribute("aria-disabled", "true");
 
-    function setStock(inStock) {
+    logMessage("Potassium changed to OUT OF STOCK.");
+  }
+}
 
-        if (inStock) {
+potassiumButton.addEventListener("click", () => {
+  claims++;
+  claimCount.textContent = claims;
+  claimText.textContent = "Test claim recorded — one key consumed.";
 
-            stockStatus.textContent =
-                "In Stock";
+  logMessage("CLICK DETECTED — one Potassium key consumed.");
 
-            stockStatus.classList.add(
-                "in-stock"
-            );
+  // One key per stock event.
+  setPotassiumStock(false);
+});
 
-            potassiumButton.disabled =
-                false;
+document.getElementById("stockBtn").addEventListener("click", () => {
+  setPotassiumStock(true);
+});
 
-            potassiumButton.removeAttribute(
-                "disabled"
-            );
+document.getElementById("outBtn").addEventListener("click", () => {
+  setPotassiumStock(false);
+});
 
-            potassiumButton.setAttribute(
-                "aria-disabled",
-                "false"
-            );
+document.getElementById("autoBtn").addEventListener("click", () => {
+  setPotassiumStock(false);
 
-            writeLog(
-                "Potassium changed to IN STOCK."
-            );
+  setTimeout(() => {
+    setPotassiumStock(true);
+  }, 1500);
+});
 
-        } else {
-
-            stockStatus.textContent =
-                "Out of stock";
-
-            stockStatus.classList.remove(
-                "in-stock"
-            );
-
-            potassiumButton.disabled =
-                true;
-
-            potassiumButton.setAttribute(
-                "disabled",
-                ""
-            );
-
-            potassiumButton.setAttribute(
-                "aria-disabled",
-                "true"
-            );
-
-            writeLog(
-                "Potassium changed to OUT OF STOCK."
-            );
-        }
-    }
-
-
-    potassiumButton.addEventListener(
-        "click",
-        function () {
-
-            writeLog(
-                "CLICK DETECTED — Potassium button was clicked!"
-            );
-
-            const originalText =
-                "Get Potassium";
-
-            const buyText =
-                potassiumButton.querySelector(
-                    ".buy-text"
-                );
-
-            if (buyText) {
-
-                buyText.textContent =
-                    "CLICKED!";
-
-                setTimeout(() => {
-                    buyText.textContent =
-                        originalText;
-                }, 1000);
-            }
-        }
-    );
-
-
-    document
-        .querySelector("#stockButton")
-        .addEventListener(
-            "click",
-            function () {
-                setStock(true);
-            }
-        );
-
-
-    document
-        .querySelector("#outButton")
-        .addEventListener(
-            "click",
-            function () {
-                setStock(false);
-            }
-        );
-
-
-    document
-        .querySelector("#resetButton")
-        .addEventListener(
-            "click",
-            function () {
-
-                setStock(false);
-
-                log.textContent =
-                    "Reset.";
-            }
-        );
-
-
-    /*
-     * Start in the same state as the original
-     * example: Out of stock + disabled.
-     */
-    setStock(false);
+setPotassiumStock(false);
 </script>
-
 </body>
 </html>
